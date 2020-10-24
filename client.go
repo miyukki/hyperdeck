@@ -73,7 +73,8 @@ func New(addr string, opts ...ClientOpts) *Client {
 }
 
 func (c *Client) Start(ctx context.Context) error {
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:9993", c.addr))
+	c.stopping = false
+	conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:9993", c.addr), 1*time.Second)
 	if err != nil {
 		return errors.Wrap(err, "fail to open connection")
 	}
