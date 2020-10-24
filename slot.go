@@ -18,6 +18,14 @@ device model:
 firmware revision:
 */
 
+const (
+	// empty, mounting, error, mounted
+	SlotStatusEmpty    = "empty"
+	SlotStatusMounting = "mounting"
+	SlotStatusError    = "error"
+	SlotStatusMounted  = "mounted"
+)
+
 type SlotListener func(Slot)
 
 type Slot struct {

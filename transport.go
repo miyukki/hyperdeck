@@ -16,6 +16,18 @@ video format: 1080i50
 loop: false
 */
 
+const (
+	//preview, stopped, play, forward, rewind, jog, shuttle, record
+	TransportStatusPreview = "preview"
+	TransportStatusStopped = "stopped"
+	TransportStatusPlay    = "play"
+	TransportStatusForward = "forward"
+	TransportStatusRewind  = "rewind"
+	TransportStatusJog     = "jog"
+	TransportStatusShuttle = "shuttle"
+	TransportStatusRecord  = "record"
+)
+
 type StringParser interface {
 	FromString(string) error
 }
