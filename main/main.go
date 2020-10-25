@@ -21,7 +21,7 @@ func main() {
 	defer c.Stop()
 	fmt.Println("Success")
 
-	list, err := c.DiskList(hyperdeck.SlotAll)
+	list, err := c.DiskList(hyperdeck.SlotCurrent)
 	if err != nil {
 		if _, ok := err.(hyperdeck.HyperdeckError); !ok {
 			panic(err)
@@ -29,6 +29,17 @@ func main() {
 	}
 	for _, res := range list {
 		fmt.Printf("- %s: %s: %v\n", res.Name, res.Duration, res.Duration.Duration())
+	}
+
+	clips, err := c.ClipsGet()
+	if err != nil {
+		fmt.Println(err)
+		if _, ok := err.(hyperdeck.HyperdeckError); !ok {
+			panic(err)
+		}
+	}
+	for _, res := range clips {
+		fmt.Printf("- %s: %s: %v\n", res.Name, res.StartAt, res.Duration)
 	}
 
 	transport, err := c.TransportInfo()

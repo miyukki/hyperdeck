@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -42,7 +43,8 @@ func ParseError(payload []byte) (HyperdeckError, error) {
 		if err != nil && err != io.EOF {
 			return er, errors.Wrap(err, "fail to read message")
 		}
-		if line == "\n" || err != nil && err == io.EOF {
+		if line == "\n" || (err != nil && err == io.EOF) {
+			er.Message = strings.TrimSpace(er.Message)
 			return er, nil
 		}
 		er.Message += line

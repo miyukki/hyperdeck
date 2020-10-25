@@ -12,12 +12,11 @@ import (
 const (
 	Slot1       = 1
 	Slot2       = 2
-	SlotAll     = 0
 	SlotCurrent = 0
 )
 
-type Clips []Clip
-type Clip struct {
+type DiskClips []DiskClip
+type DiskClip struct {
 	ID       int
 	Slot     int
 	Name     string
@@ -27,7 +26,7 @@ type Clip struct {
 }
 
 // DiskList will list clips in slot. If the slot is set to 0 it will list all slots
-func (c *Client) DiskList(slot int) (Clips, error) {
+func (c *Client) DiskList(slot int) (DiskClips, error) {
 	cmd := fmt.Sprintf("disk list")
 	if slot != 0 {
 		cmd = fmt.Sprintf("%s: slot id: %v", cmd, slot)
@@ -56,7 +55,7 @@ func (c *Client) DiskList(slot int) (Clips, error) {
 	}
 
 	curSlot := -1
-	clips := make([]Clip, 0)
+	clips := make([]DiskClip, 0)
 	for {
 		line, err := buff.ReadString('\n')
 		if err != nil {
@@ -74,7 +73,7 @@ func (c *Client) DiskList(slot int) (Clips, error) {
 				return nil, errors.Wrapf(err, "fail to parse current slot: %s", line)
 			}
 		} else {
-			clip, err := ParseClip(line)
+			clip, err := ParseDiskClip(line)
 			if err != nil {
 				return nil, errors.Wrap(err, "fail to parse current clip")
 			}
@@ -87,8 +86,8 @@ func (c *Client) DiskList(slot int) (Clips, error) {
 	}
 }
 
-func ParseClip(line string) (Clip, error) {
-	var clip Clip
+func ParseDiskClip(line string) (DiskClip, error) {
+	var clip DiskClip
 	values := strings.SplitN(line, ":", 2)
 
 	if len(values) != 2 {
@@ -103,7 +102,7 @@ func ParseClip(line string) (Clip, error) {
 
 	metadata := strings.Split(values[1], " ")
 	if len(metadata) < 5 {
-		return clip, errors.Wrapf(err, "invalid metadata: %s", values[1])
+		return clip, fmt.Errorf("invalid metadata: %s", values[1])
 	}
 	clip.Name = metadata[1]
 	clip.Codec = metadata[2]
