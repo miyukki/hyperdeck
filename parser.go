@@ -55,11 +55,13 @@ func Parse(payload []byte, res interface{}) error {
 		if fieldType.Type.Name() == "string" {
 			field.SetString(value)
 		} else if fieldType.Type.Name() == "int" {
-			val, err := strconv.Atoi(value)
-			if err != nil {
-				return errors.Wrapf(err, "invalid value for %s", fieldType.Name)
+			if value != "none" {
+				val, err := strconv.Atoi(value)
+				if err != nil {
+					return errors.Wrapf(err, "invalid value for %s", fieldType.Name)
+				}
+				field.SetInt(int64(val))
 			}
-			field.SetInt(int64(val))
 		} else {
 			parser, ok := field.Addr().Interface().(StringParser)
 			if ok {

@@ -3,6 +3,7 @@ package hyperdeck
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -38,10 +39,10 @@ func ParseError(payload []byte) (HyperdeckError, error) {
 
 	for {
 		line, err := buff.ReadString('\n')
-		if err != nil {
+		if err != nil && err != io.EOF {
 			return er, errors.Wrap(err, "fail to read message")
 		}
-		if line == "\n" {
+		if line == "\n" || err != nil && err == io.EOF {
 			return er, nil
 		}
 		er.Message += line

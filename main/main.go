@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	c := hyperdeck.New("192.168.20.244",
+	c := hyperdeck.New("192.168.20.243",
 		hyperdeck.WithRepeater("0.0.0.0"),
 		hyperdeck.WithTransportListener(OnTransportNotification),
 		hyperdeck.WithSlotListener(OnSlotNotification),
@@ -23,7 +23,9 @@ func main() {
 
 	list, err := c.DiskList(hyperdeck.SlotAll)
 	if err != nil {
-		panic(err)
+		if _, ok := err.(hyperdeck.HyperdeckError); !ok {
+			panic(err)
+		}
 	}
 	for _, res := range list {
 		fmt.Printf("- %s: %s: %v\n", res.Name, res.Duration, res.Duration.Duration())
