@@ -81,7 +81,7 @@ func (c *Client) Start(ctx context.Context) error {
 
 	// Wait for Motd
 	conn.SetReadDeadline(time.Now().Add(1 * time.Second))
-	buff := make([]byte, 1024)
+	buff := make([]byte, 4096)
 	n, err := conn.Read(buff)
 	if err != nil {
 		conn.Close()
@@ -95,7 +95,10 @@ func (c *Client) Start(ctx context.Context) error {
 	go c.writer()
 	go c.watchdog()
 
-	c.Notify(NotificationTransport, NotificationSlot)
+	err = c.Notify(NotificationTransport, NotificationSlot)
+	if err != nil {
+		panic(err)
+	}
 
 	// We are succesfully connected
 	if c.repeaterAddr != "" {

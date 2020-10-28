@@ -1,6 +1,7 @@
 package hyperdeck
 
 import (
+	"bytes"
 	"context"
 	"io"
 	"net"
@@ -67,8 +68,9 @@ func (c *Client) writer() {
 
 func (c *Client) reader(ctx context.Context) {
 	log := logger.Get(ctx)
-	buff := make([]byte, 1024*1024)
+	buff := make([]byte, 1024)
 	c.writeSync <- true
+	curBuff := make([]byte, 0)
 
 	for {
 		c.stopLock.Lock()
@@ -98,17 +100,25 @@ func (c *Client) reader(ctx context.Context) {
 				continue
 			}
 		}
-		if strings.HasPrefix(string(buff[:n]), "5") {
-			c.writeAsyncPayload(buff[:n])
+
+		curBuff = append(curBuff, buff[:n]...)
+		if n >= 150 && !bytes.HasSuffix(curBuff, []byte{0x0d, 0x0a, 0x0d, 0x0a}) {
+			continue
+		}
+		res := make([]byte, len(curBuff))
+		copy(res, curBuff)
+		curBuff = make([]byte, 0)
+		if strings.HasPrefix(string(res), "5") {
+			c.writeAsyncPayload(res)
 			continue
 		}
 
 		if c.operation() == nil {
-			log.WithField("msg", string(buff[:n])).Error("Unsolicited message from hyperdeck")
+			log.WithField("msg", string(res)).Error("Unsolicited message from hyperdeck")
 			continue
 		}
 
-		c.operation().Result <- buff[:n]
+		c.operation().Result <- res
 		c.resetOperation()
 		c.writeSync <- true
 	}
