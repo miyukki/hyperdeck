@@ -1,0 +1,4 @@
+205 clips info:
+clips count: 2
+42: TestClip 01:23:45:10 00:01:34:12
+43: 01-Clip-Test 02:34:56:01 01:02:12:34
