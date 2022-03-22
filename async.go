@@ -12,10 +12,11 @@ import (
 type Notification string
 
 const (
-	NotificationTransport     Notification = "transport"
-	NotificationSlot          Notification = "slot"
-	NotificationRemote        Notification = "remote"
-	NotificationConfiguration Notification = "configuration"
+	NotificationTransport       Notification = "transport"
+	NotificationSlot            Notification = "slot"
+	NotificationRemote          Notification = "remote"
+	NotificationConfiguration   Notification = "configuration"
+	NotificationDisplayTimecode Notification = "display timecode"
 )
 
 func (c *Client) asyncRegister(writer io.Writer) string {
@@ -95,5 +96,16 @@ func (c *Client) onAsyncMessage(payload []byte) {
 			return
 		}
 		c.slotListener(slot)
+	}
+
+	if bytes.HasPrefix(payload, []byte("513 display timecode")) && c.displayTimecodeListener != nil {
+		timecode, err := ParseDisplayTimecode(payload)
+		if err != nil {
+			// TODO cleanup
+			fmt.Println("ERROR:")
+			fmt.Println(err.Error())
+			return
+		}
+		c.displayTimecodeListener(timecode)
 	}
 }

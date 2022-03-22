@@ -1,69 +1,69 @@
 package hyperdeck
 
-import (
-	"fmt"
-	"strconv"
-	"strings"
-	"time"
+// type Timecode struct {
+// 	Hours   int
+// 	Minutes int
+// 	Seconds int
+// 	Frames  int
+// 	DF      bool
+// }
 
-	"github.com/pkg/errors"
-)
+// func (t Timecode) String() string {
+// 	return fmt.Sprintf("%02d:%02d:%02d:%02d", t.Hours, t.Minutes, t.Seconds, t.Frames)
+// }
 
-type Timecode struct {
-	Hours   int
-	Minutes int
-	Seconds int
-	Frames  int
-}
+// func (t *Timecode) FromString(timecode string) error {
+// 	fields := strings.Split(timecode, ":")
+// 	if len(fields) == 3 && strings.Contains(fields[2], ";") {
+// 		subfields := strings.Split(fields[2], ";")
+// 		if len(subfields) != 2 {
+// 			return fmt.Errorf("invalid timecode: %s", timecode)
+// 		}
+// 		fields[2] = subfields[0]
+// 		fields = append(fields, subfields[1])
+// 		t.DF = true
+// 	} else if len(fields) != 4 {
+// 		return fmt.Errorf("invalid timecode: %s", timecode)
+// 	}
 
-func (t Timecode) String() string {
-	return fmt.Sprintf("%02d:%02d:%02d:%02d", t.Hours, t.Minutes, t.Seconds, t.Frames)
-}
+// 	hours, err := strconv.Atoi(fields[0])
+// 	if err != nil {
+// 		return errors.Wrapf(err, "fail to parse timecode (hour): %s", timecode)
+// 	}
+// 	minutes, err := strconv.Atoi(fields[1])
+// 	if err != nil {
+// 		return errors.Wrapf(err, "fail to parse timecode (minute): %s", timecode)
+// 	}
+// 	seconds, err := strconv.Atoi(fields[2])
+// 	if err != nil {
+// 		return errors.Wrapf(err, "fail to parse timecode (second): %s", timecode)
+// 	}
+// 	frames, err := strconv.Atoi(fields[3])
+// 	if err != nil {
+// 		return errors.Wrapf(err, "fail to parse timecode (frame): %s", timecode)
+// 	}
 
-func (t *Timecode) FromString(timecode string) error {
-	fields := strings.Split(timecode, ":")
-	if len(fields) != 4 {
-		return fmt.Errorf("invalid timecode: %s", timecode)
-	}
+// 	t.Hours = hours
+// 	t.Minutes = minutes
+// 	t.Seconds = seconds
+// 	t.Frames = frames
+// 	return nil
+// }
 
-	hours, err := strconv.Atoi(fields[0])
-	if err != nil {
-		return errors.Wrapf(err, "fail to parse timecode (hour): %s", timecode)
-	}
-	minutes, err := strconv.Atoi(fields[1])
-	if err != nil {
-		return errors.Wrapf(err, "fail to parse timecode (minute): %s", timecode)
-	}
-	seconds, err := strconv.Atoi(fields[2])
-	if err != nil {
-		return errors.Wrapf(err, "fail to parse timecode (second): %s", timecode)
-	}
-	frames, err := strconv.Atoi(fields[3])
-	if err != nil {
-		return errors.Wrapf(err, "fail to parse timecode (frame): %s", timecode)
-	}
+// func (t Timecode) Duration() time.Duration {
+// 	var res time.Duration
+// 	res += time.Duration(t.Hours) * time.Hour
+// 	res += time.Duration(t.Minutes) * time.Minute
+// 	res += time.Duration(t.Seconds) * time.Second
+// 	res += time.Duration(t.Frames) * (time.Second / 25)
+// 	return res
+// }
 
-	t.Hours = hours
-	t.Minutes = minutes
-	t.Seconds = seconds
-	t.Frames = frames
-	return nil
-}
-
-func (t Timecode) Duration() time.Duration {
-	var res time.Duration
-	res += time.Duration(t.Hours) * time.Hour
-	res += time.Duration(t.Minutes) * time.Minute
-	res += time.Duration(t.Seconds) * time.Second
-	res += time.Duration(t.Frames) * (time.Second / 25)
-	return res
-}
-
-func ParseTimecode(timecode string) (Timecode, error) {
-	res := &Timecode{}
-	err := res.FromString(timecode)
-	if err != nil {
-		return *res, errors.Wrap(err, "fail to parse timecode")
-	}
-	return *res, nil
-}
+// func ParseTimecode(timecode string) (Timecode, error) {
+// 	res := &Timecode{}
+// 	err := res.FromString(timecode)
+// 	if err != nil {
+// 		return *res, errors.Wrap(err, "fail to parse timecode")
+// 	}
+// 	return *res, nil
+// }

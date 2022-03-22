@@ -8,14 +8,15 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/trimmer-io/go-timecode/timecode"
 )
 
 type Clips []Clip
 type Clip struct {
 	ID       int
 	Name     string
-	StartAt  Timecode
-	Duration Timecode
+	StartAt  timecode.Timecode
+	Duration timecode.Timecode
 }
 
 func (c *Client) ClipsGet() (Clips, error) {
@@ -88,13 +89,13 @@ func ParseClipLine(line string) (Clip, error) {
 		return clip, fmt.Errorf("invalid metadata: %s", values[1])
 	}
 	clip.Name = metadata[1]
-	startAt, err := ParseTimecode(metadata[2])
+	startAt, err := timecode.Parse(metadata[2])
 	if err != nil {
 		return clip, errors.Wrap(err, "invalid startAt")
 	}
 	clip.StartAt = startAt
 
-	duration, err := ParseTimecode(metadata[3])
+	duration, err := timecode.Parse(metadata[3])
 	if err != nil {
 		return clip, errors.Wrap(err, "invalid duration")
 	}

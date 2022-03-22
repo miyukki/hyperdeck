@@ -31,8 +31,9 @@ type Client struct {
 	stopping bool
 	stopLock *sync.Mutex
 
-	transportListener TransportListener
-	slotListener      SlotListener
+	transportListener       TransportListener
+	slotListener            SlotListener
+	displayTimecodeListener DisplayTimecodeListener
 }
 
 type ClientOpts func(c *Client)
@@ -52,6 +53,12 @@ func WithTransportListener(listener TransportListener) ClientOpts {
 func WithSlotListener(listener SlotListener) ClientOpts {
 	return func(c *Client) {
 		c.slotListener = listener
+	}
+}
+
+func WithDisplayTimecodeListener(listener DisplayTimecodeListener) ClientOpts {
+	return func(c *Client) {
+		c.displayTimecodeListener = listener
 	}
 }
 
@@ -95,7 +102,7 @@ func (c *Client) Start(ctx context.Context) error {
 	go c.writer()
 	go c.watchdog()
 
-	err = c.Notify(NotificationTransport, NotificationSlot)
+	err = c.Notify(NotificationTransport, NotificationDisplayTimecode)
 	if err != nil {
 		panic(err)
 	}

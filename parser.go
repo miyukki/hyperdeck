@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/trimmer-io/go-timecode/timecode"
 )
 
 func Parse(payload []byte, res interface{}) error {
@@ -62,6 +63,10 @@ func Parse(payload []byte, res interface{}) error {
 				}
 				field.SetInt(int64(val))
 			}
+		} else if fieldType.Type.Name() == "Timecode" {
+			// fmt.Println("!!!!!!!!")
+			timecode, _ := timecode.Parse(value)
+			field.SetUint(uint64(timecode))
 		} else {
 			parser, ok := field.Addr().Interface().(StringParser)
 			if ok {

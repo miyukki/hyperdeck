@@ -2,6 +2,7 @@ package hyperdeck
 
 import (
 	"github.com/pkg/errors"
+	"github.com/trimmer-io/go-timecode/timecode"
 )
 
 /*
@@ -35,15 +36,15 @@ type StringParser interface {
 type TransportListener func(Transport)
 
 type Transport struct {
-	Status          string   `header:"status"`
-	Speed           int      `header:"speed"`
-	SlotID          int      `header:"slot id"`
-	ClipID          int      `header:"clip id"`
-	SingleClip      bool     `header:"single clip"`
-	DisplayTimecode Timecode `header:"display timecode"`
-	Timecode        Timecode `header:"timecode"`
-	VideoFormat     string   `header:"video format"`
-	Loop            bool     `header:"loop"`
+	Status          string            `header:"status"`
+	Speed           int               `header:"speed"`
+	SlotID          int               `header:"slot id"`
+	ClipID          int               `header:"clip id"`
+	SingleClip      bool              `header:"single clip"`
+	DisplayTimecode timecode.Timecode `header:"display timecode"`
+	Timecode        timecode.Timecode `header:"timecode"`
+	VideoFormat     string            `header:"video format"`
+	Loop            bool              `header:"loop"`
 }
 
 func ParseTransport(payload []byte) (Transport, error) {

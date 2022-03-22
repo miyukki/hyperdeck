@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/trimmer-io/go-timecode/timecode"
 )
 
 const (
@@ -22,7 +23,7 @@ type DiskClip struct {
 	Name     string
 	Codec    string
 	Format   string
-	Duration Timecode
+	Duration timecode.Timecode
 }
 
 // DiskList will list clips in slot. If the slot is set to 0 it will list all slots
@@ -107,7 +108,7 @@ func ParseDiskClip(line string) (DiskClip, error) {
 	clip.Name = metadata[1]
 	clip.Codec = metadata[2]
 	clip.Format = metadata[3]
-	duration, err := ParseTimecode(metadata[4])
+	duration, err := timecode.Parse(metadata[4])
 	if err != nil {
 		return clip, errors.Wrap(err, "invalid timecode")
 	}
